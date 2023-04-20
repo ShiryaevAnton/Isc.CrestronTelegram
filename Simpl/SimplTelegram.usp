@@ -1,0 +1,97 @@
+/*******************************************************************************************
+  SIMPL+ Module Information
+  (Fill in comments below)
+*******************************************************************************************/
+/*
+Dealer Name:
+System Name:
+System Number:
+Programmer:
+Comments:
+*/
+
+/*******************************************************************************************
+  Compiler Directives
+  (Uncomment and declare compiler directives as needed)
+*******************************************************************************************/
+// #ENABLE_DYNAMIC
+#SYMBOL_NAME "SimplTelegram"
+// #HINT ""
+// #DEFINE_CONSTANT
+#CATEGORY "10" 
+// #PRINT_TO_TRACE
+// #DIGITAL_EXPAND 
+// #ANALOG_SERIAL_EXPAND 
+// #OUTPUT_SHIFT 
+// #HELP_PDF_FILE ""
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING  
+#ENABLE_TRACE
+// #ENCODING_ASCII
+// #ENCODING_UTF16
+// #ENCODING_INHERIT_FROM_PARENT
+// #ENCODING_INHERIT_FROM_PROGRAM
+/*
+#HELP_BEGIN
+   (add additional lines of help lines)
+#HELP_END
+*/
+
+  
+#USER_SIMPLSHARP_LIBRARY "Isc.CrestronTelegram.Simpl"
+
+DIGITAL_INPUT _skip_, _skip_, _skip_, DIGITAL_VALUE;
+ANALOG_INPUT ANALOG_VALUE; 
+STRING_INPUT STRING_VALUE[255];
+
+STRING_OUTPUT _skip_, _skip_, _skip_, MESSAGE;
+
+STRING_PARAMETER API_KEY[100];
+
+#BEGIN_PARAMETER_PROPERTIES API_KEY
+   propValidUnits = unitString;
+   propDefaultUnit = unitString;
+   propDefaultValue = "";
+#END_PARAMETER_PROPERTIES
+
+
+
+SimplApi api;
+
+
+EventHandler OnSimplStringEvent (SimplApi sender, SimplStringEventArg args)
+{
+	MESSAGE = args.Message;
+}
+
+
+CHANGE DIGITAL_VALUE
+{
+	api.SendDigital("{0}", DIGITAL_VALUE);   
+}
+
+CHANGE ANALOG_VALUE
+{
+	api.SendAnalog("{0}", ANALOG_VALUE);   
+}
+
+CHANGE STRING_VALUE
+{
+	api.SendString("{0}", STRING_VALUE);   
+}
+
+
+
+
+
+Function Main()
+{
+	WaitForInitializationComplete();
+	 
+ 	api.Init(API_KEY);
+
+	RegisterEvent(api, SimplStringEvent, OnSimplStringEvent);
+		
+}
+
+
